@@ -1,0 +1,23 @@
+.switch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 400px;
+  height: 400px;
+  // border: 1px solid black;
+  border-radius: 50%;
+  transition: all 1s linear;
+
+  &__button {
+    position: absolute;
+    z-index: 5;
+    box-sizing: border-box;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}
