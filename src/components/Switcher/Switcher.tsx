@@ -63,23 +63,24 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
     const selectedButtonX = selectedButtonDimensions.x + buttonRadius;
     const selectedButtonY = selectedButtonDimensions.y + buttonRadius;
 
-    const distance = Math.sqrt(
-      (selectedButtonX - targetPositionX) ** 2 +
-        (selectedButtonY - targetPositionY) ** 2
-    );
-    let cos =
-      (switcherRadius ** 2 * 2 - distance ** 2) / (switcherRadius ** 2 * 2);
-    if (cos < -1) cos = -1;
-
-    let angle = (Math.acos(cos) * 180) / Math.PI;
-    angle = Math.round(angle / singleAngle) * singleAngle;
-
-    if (selectedButtonX > switcherMiddle) {
-      angle *= -1;
-    }
-
     if (ref.current) {
       const switcher = ref.current;
+
+      const distance = Math.sqrt(
+        (selectedButtonX - targetPositionX) ** 2 +
+          (selectedButtonY - targetPositionY) ** 2
+      );
+      let cos =
+        (switcherRadius ** 2 * 2 - distance ** 2) / (switcherRadius ** 2 * 2);
+      if (cos < -1) cos = -1;
+
+      let angle = (Math.acos(cos) * 180) / Math.PI;
+      angle = Math.round(angle / singleAngle) * singleAngle;
+
+      if (selectedButtonX > switcherMiddle) {
+        angle *= -1;
+      }
+
       const rotationPropertyValue = switcher.style.transform;
       let newRotationValue = 0;
       if (rotationPropertyValue) {
@@ -88,7 +89,17 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
         if (currentRotationValue)
           newRotationValue = Number(currentRotationValue[1]);
       }
+
       newRotationValue = newRotationValue ? angle + newRotationValue : angle;
+      if (newRotationValue >= 360) {
+        newRotationValue -= 360;
+        angle = 360 - angle;
+      }
+      if (newRotationValue <= -360) {
+        newRotationValue += 360;
+        angle = 360 - angle;
+      }
+
       switcher.style.transform = `rotate(${newRotationValue}deg)`;
       switcher.style.transition = `all ${Math.abs(angle) * 10}ms linear`;
       Array.from(switcher.children).forEach((item) => {
