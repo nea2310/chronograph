@@ -75,7 +75,8 @@ const Switcher: FC<Props> = ({ switcherButtons }) => {
     }
 
     if (ref.current) {
-      const rotationPropertyValue = ref.current.style.transform;
+      const switcher = ref.current;
+      const rotationPropertyValue = switcher.style.transform;
       let newRotationValue = 0;
       if (rotationPropertyValue) {
         const currentRotationValue =
@@ -83,19 +84,24 @@ const Switcher: FC<Props> = ({ switcherButtons }) => {
         if (currentRotationValue)
           newRotationValue = Number(currentRotationValue[1]);
       }
-
-      ref.current.style.transform = `rotate(${
-        newRotationValue ? angle + newRotationValue : angle
-      }deg)`;
+      newRotationValue = newRotationValue ? angle + newRotationValue : angle;
+      switcher.style.transform = `rotate(${newRotationValue}deg)`;
+      switcher.style.transition = `all ${Math.abs(angle) * 10}ms linear`;
+      Array.from(switcher.children).forEach((item) => {
+        if (!(item instanceof HTMLButtonElement)) return;
+        const button = item;
+        button.style.transform = `rotate(${newRotationValue * -1}deg)`;
+        button.style.transition = `all ${Math.abs(angle) * 10}ms linear`;
+      });
     }
   };
 
   const ref = useRef<HTMLDivElement>(null);
   return (
-    <div className="switch" ref={ref}>
+    <div className="switcher" ref={ref}>
       {switcherButtons.map((item) => (
         <button
-          className="switch__button"
+          className="switcher__button"
           type="button"
           key={item}
           onClick={(event) => handleButtonClick(event)}

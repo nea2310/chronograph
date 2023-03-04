@@ -1,4 +1,4 @@
-.switch {
+.switcher {
   position: relative;
   display: flex;
   align-items: center;
@@ -6,9 +6,7 @@
   box-sizing: border-box;
   width: 400px;
   height: 400px;
-  // border: 1px solid black;
   border-radius: 50%;
-  transition: all 1s linear;
 
   &__button {
     position: absolute;
