@@ -3,7 +3,7 @@ import { FC, MouseEvent, useEffect, useRef, useState } from 'react';
 import './Switcher.scss';
 
 type Props = {
-  switcherButtonsItems: string[];
+  switcherButtonsItems: { index: number; label: string }[];
 };
 
 const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
@@ -23,9 +23,9 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
     const switcherWrapper = switcherRef.current;
     if (!switcher || !switcherWrapper) return;
 
-    const buttons = switcher.querySelectorAll('.switcher__button');
+    const buttons = switcher.querySelectorAll('.switcher__button-wrapper');
     let shift = 0;
-    if (buttons?.[0] instanceof HTMLButtonElement) {
+    if (buttons?.[0] instanceof HTMLDivElement) {
       shift = buttons[0].offsetHeight / 2;
       setSingleAngle(360 / buttons.length);
       setButtonRadius(shift);
@@ -51,7 +51,7 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
       }
     }
 
-    if (buttons?.[0] instanceof HTMLButtonElement) {
+    if (buttons?.[0] instanceof HTMLDivElement) {
       const buttonDimensions = buttons[0].getBoundingClientRect();
       setTargetPositionX(buttonDimensions.x + shift);
       setTargetPositionY(buttonDimensions.y + shift);
@@ -104,12 +104,12 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
       }
 
       switcher.style.transform = `rotate(${newRotationValue}deg)`;
-      switcher.style.transition = `all ${Math.abs(angle) * 10}ms linear`;
+      switcher.style.transition = `transform ${Math.abs(angle) * 10}ms linear`;
       Array.from(switcher.children).forEach((item) => {
-        if (!(item instanceof HTMLButtonElement)) return;
+        if (!(item instanceof HTMLDivElement)) return;
         const button = item;
         button.style.transform = `rotate(${newRotationValue * -1}deg)`;
-        button.style.transition = `all ${Math.abs(angle) * 10}ms linear`;
+        button.style.transition = `transform ${Math.abs(angle) * 10}ms linear`;
       });
     }
   };
@@ -119,15 +119,17 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
   return (
     <div ref={switcherRef} className="switcher">
       <div className="switcher__wrapper" ref={switcherWrapperRef}>
-        {switcherButtons.map((item) => (
-          <button
-            className="switcher__button"
-            type="button"
-            key={item}
-            onClick={(event) => handleButtonClick(event)}
-          >
-            {item}
-          </button>
+        {switcherButtons.map(({ index, label }) => (
+          <div key={Number(index)} className="switcher__button-wrapper">
+            <button
+              className="switcher__button"
+              type="button"
+              onClick={(event) => handleButtonClick(event)}
+            >
+              {index}
+            </button>
+            <span className="switcher__button-label">{label}</span>
+          </div>
         ))}
       </div>
     </div>
