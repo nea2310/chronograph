@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useLayoutEffect, useRef, useState } from 'react';
+import { FC, MouseEvent, useEffect, useRef, useState } from 'react';
 
 import './Switcher.scss';
 
@@ -18,23 +18,26 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
   const [buttonRadius, setButtonRadius] = useState(0);
   const [singleAngle, setSingleAngle] = useState(0);
 
-  useLayoutEffect(() => {
-    const switchDiameter = ref.current?.offsetHeight;
-    const buttons = ref.current?.querySelectorAll('.switcher__button');
+  useEffect(() => {
+    const switcher = switcherWrapperRef.current;
+    const switcherWrapper = switcherRef.current;
+    if (!switcher || !switcherWrapper) return;
+
+    const buttons = switcher.querySelectorAll('.switcher__button');
     let shift = 0;
     if (buttons?.[0] instanceof HTMLButtonElement) {
       shift = buttons[0].offsetHeight / 2;
       setSingleAngle(360 / buttons.length);
+      setButtonRadius(shift);
+      switcherWrapper.style.paddingLeft = `${shift}px`;
+      switcherWrapper.style.paddingRight = `${shift}px`;
     }
+    const switchDiameter = switcher.offsetHeight;
 
-    if (switchDiameter && buttons) {
+    if (switchDiameter) {
       const radius = switchDiameter / 2;
       setSwitcherRadius(radius);
-      setSwitcherMiddle(
-        Number(ref.current?.getBoundingClientRect().x) + radius
-      );
-      if (buttons[0] instanceof HTMLButtonElement)
-        setButtonRadius(buttons[0].offsetWidth / 2);
+      setSwitcherMiddle(Number(switcher.getBoundingClientRect().x) + radius);
       // eslint-disable-next-line no-plusplus
       for (let i = 0; i <= buttons.length; i++) {
         const button = buttons[i];
@@ -63,8 +66,8 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
     const selectedButtonX = selectedButtonDimensions.x + buttonRadius;
     const selectedButtonY = selectedButtonDimensions.y + buttonRadius;
 
-    if (ref.current) {
-      const switcher = ref.current;
+    if (switcherWrapperRef.current) {
+      const switcher = switcherWrapperRef.current;
 
       const distance = Math.sqrt(
         (selectedButtonX - targetPositionX) ** 2 +
@@ -111,19 +114,22 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
     }
   };
 
-  const ref = useRef<HTMLDivElement>(null);
+  const switcherWrapperRef = useRef<HTMLDivElement>(null);
+  const switcherRef = useRef<HTMLDivElement>(null);
   return (
-    <div className="switcher" ref={ref}>
-      {switcherButtons.map((item) => (
-        <button
-          className="switcher__button"
-          type="button"
-          key={item}
-          onClick={(event) => handleButtonClick(event)}
-        >
-          {item}
-        </button>
-      ))}
+    <div ref={switcherRef} className="switcher">
+      <div className="switcher__wrapper" ref={switcherWrapperRef}>
+        {switcherButtons.map((item) => (
+          <button
+            className="switcher__button"
+            type="button"
+            key={item}
+            onClick={(event) => handleButtonClick(event)}
+          >
+            {item}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

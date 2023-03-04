@@ -1,0 +1,13 @@
+@import './vars';
+
+@mixin border {
+  border: 1px solid $borderColor;
+  border-radius: 50%;
+}
+
+@mixin button-reset-style() {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+}

@@ -1,21 +1,29 @@
+@import '../../styles/_mixins';
+@import '../../styles/_vars';
+
 .switcher {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  width: 400px;
-  height: 400px;
-  border-radius: 50%;
+  &__wrapper {
+    @include border;
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    aspect-ratio: 1/1;
+  }
 
   &__button {
+    @include button-reset-style;
+    @include border;
+
     position: absolute;
     z-index: 5;
     box-sizing: border-box;
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    background: $backgroundColor;
     cursor: pointer;
   }
 }
