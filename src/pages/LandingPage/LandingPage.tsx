@@ -6,10 +6,19 @@ const LandingPage: FC = () => {
   return (
     <main className="landing-page">
       <Switcher
-        switcherButtons={[
+        switcherButtonsItems={[
           'кино',
           'театр',
           'наука',
+          'спорт',
+          'литература',
+          'искусство',
+          'спорт',
+          'литература',
+          'искусство',
+          'спорт',
+          'литература',
+          'искусство',
           'спорт',
           'литература',
           'искусство',

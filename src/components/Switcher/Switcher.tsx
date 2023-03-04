@@ -3,10 +3,14 @@ import { FC, MouseEvent, useLayoutEffect, useRef, useState } from 'react';
 import './Switcher.scss';
 
 type Props = {
-  switcherButtons: string[];
+  switcherButtonsItems: string[];
 };
 
-const Switcher: FC<Props> = ({ switcherButtons }) => {
+const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
+  const switcherButtons =
+    switcherButtonsItems.length <= 6
+      ? switcherButtonsItems
+      : switcherButtonsItems.slice(0, 6);
   const [targetPositionX, setTargetPositionX] = useState(0);
   const [targetPositionY, setTargetPositionY] = useState(0);
   const [switcherMiddle, setSwitcherMiddle] = useState(0);
@@ -16,7 +20,7 @@ const Switcher: FC<Props> = ({ switcherButtons }) => {
 
   useLayoutEffect(() => {
     const switchDiameter = ref.current?.offsetHeight;
-    const buttons = ref.current?.querySelectorAll('.switch__button');
+    const buttons = ref.current?.querySelectorAll('.switcher__button');
     let shift = 0;
     if (buttons?.[0] instanceof HTMLButtonElement) {
       shift = buttons[0].offsetHeight / 2;
