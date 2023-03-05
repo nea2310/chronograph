@@ -100,7 +100,7 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
       }
       if (newRotationValue <= -360) {
         newRotationValue += 360;
-        angle = 360 - angle;
+        angle = -360 - angle;
       }
 
       switcher.style.transform = `rotate(${newRotationValue}deg)`;
