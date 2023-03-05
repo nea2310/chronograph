@@ -1,4 +1,5 @@
 import { FC, MouseEvent, useEffect, useRef, useState } from 'react';
+import classnames from 'classnames';
 
 import './Switcher.scss';
 
@@ -17,6 +18,8 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
   const [switcherRadius, setSwitcherRadius] = useState(0);
   const [buttonRadius, setButtonRadius] = useState(0);
   const [singleAngle, setSingleAngle] = useState(0);
+  const [activeButton, setActiveButton] = useState(1);
+  const [isTransitionEnd, setIsTransitionEnd] = useState(true);
 
   useEffect(() => {
     const switcher = switcherWrapperRef.current;
@@ -58,10 +61,20 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
     }
   }, []);
 
+  const handleTransitionEnd = (
+    event: React.TransitionEvent<HTMLDivElement>
+  ) => {
+    if (event.target !== event.currentTarget) return;
+    setIsTransitionEnd(true);
+  };
+
   const handleButtonClick = (
     event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
   ) => {
+    setIsTransitionEnd(false);
     const selectedButton = event.currentTarget;
+    setActiveButton(Number(selectedButton.innerText));
+
     const selectedButtonDimensions = selectedButton.getBoundingClientRect();
     const selectedButtonX = selectedButtonDimensions.x + buttonRadius;
     const selectedButtonY = selectedButtonDimensions.y + buttonRadius;
@@ -118,17 +131,32 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
   const switcherRef = useRef<HTMLDivElement>(null);
   return (
     <div ref={switcherRef} className="switcher">
-      <div className="switcher__wrapper" ref={switcherWrapperRef}>
+      <div
+        className="switcher__wrapper"
+        ref={switcherWrapperRef}
+        onTransitionEnd={(event) => handleTransitionEnd(event)}
+      >
         {switcherButtons.map(({ index, label }) => (
-          <div key={Number(index)} className="switcher__button-wrapper">
+          <div
+            key={index}
+            className={classnames('switcher__button-wrapper', {
+              'switcher__button-wrapper_active': index === activeButton,
+            })}
+          >
             <button
               className="switcher__button"
               type="button"
               onClick={(event) => handleButtonClick(event)}
             >
-              {index}
+              <span className="switcher__button-index">{index}</span>
             </button>
-            <span className="switcher__button-label">{label}</span>
+            <span
+              className={classnames('switcher__button-label', {
+                'switcher__button-label_visible': isTransitionEnd,
+              })}
+            >
+              {label}
+            </span>
           </div>
         ))}
       </div>
