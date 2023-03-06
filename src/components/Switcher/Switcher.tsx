@@ -1,13 +1,26 @@
-import { FC, MouseEvent, useEffect, useRef, useState } from 'react';
+import {
+  FC,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import classnames from 'classnames';
 
 import './Switcher.scss';
 
 type Props = {
   switcherButtonsItems: { index: number; label: string }[];
+  activeIndex?: number;
+  onClick?: (activeIndex: number) => void;
 };
 
-const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
+const Switcher: FC<Props> = ({
+  switcherButtonsItems,
+  activeIndex = 1,
+  onClick,
+}) => {
   const switcherButtons =
     switcherButtonsItems.length <= 6
       ? switcherButtonsItems
@@ -18,8 +31,91 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
   const [switcherRadius, setSwitcherRadius] = useState(0);
   const [buttonRadius, setButtonRadius] = useState(0);
   const [singleAngle, setSingleAngle] = useState(0);
-  const [activeButton, setActiveButton] = useState(1);
+  const [activeButton, setActiveButton] = useState(activeIndex);
   const [isTransitionEnd, setIsTransitionEnd] = useState(true);
+  console.log('activeButton>>>', activeButton);
+  const handleButtonClickTest = useCallback(
+    (index: number) => {
+      if (index > 6 || index < 1) return;
+      const switcher = switcherWrapperRef.current;
+      if (!switcher || index > 6 || index < 0) return;
+      const buttons = switcher.querySelectorAll('.switcher__button-wrapper');
+      const selectedButton = Array.from(buttons)[
+        index - 1
+      ] as HTMLButtonElement;
+      setIsTransitionEnd(false);
+
+      setActiveButton(index);
+      const selectedButtonDimensions = selectedButton.getBoundingClientRect();
+      const selectedButtonX = selectedButtonDimensions.x + buttonRadius;
+      const selectedButtonY = selectedButtonDimensions.y + buttonRadius;
+
+      if (switcherWrapperRef.current) {
+        const switcher1 = switcherWrapperRef.current;
+
+        const distance = Math.sqrt(
+          (selectedButtonX - targetPositionX) ** 2 +
+            (selectedButtonY - targetPositionY) ** 2
+        );
+        let cos =
+          (switcherRadius ** 2 * 2 - distance ** 2) / (switcherRadius ** 2 * 2);
+        if (cos < -1) cos = -1;
+
+        let angle = (Math.acos(cos) * 180) / Math.PI;
+        angle = Math.round(angle / singleAngle) * singleAngle;
+
+        if (selectedButtonX > switcherMiddle) {
+          angle *= -1;
+        }
+
+        const rotationPropertyValue = switcher1.style.transform;
+        let newRotationValue = 0;
+        if (rotationPropertyValue) {
+          const currentRotationValue =
+            rotationPropertyValue.match(/rotate\(([-\d]*)/);
+          if (currentRotationValue)
+            newRotationValue = Number(currentRotationValue[1]);
+        }
+
+        newRotationValue = newRotationValue ? angle + newRotationValue : angle;
+        if (newRotationValue >= 360) {
+          newRotationValue -= 360;
+          angle = 360 - angle;
+        }
+
+        if (newRotationValue <= -360) {
+          newRotationValue += 360;
+          angle = -360 - angle;
+        }
+
+        switcher1.style.transform = `rotate(${newRotationValue}deg)`;
+        switcher1.style.transition = `transform ${
+          Math.abs(angle) * 10
+        }ms linear`;
+        Array.from(switcher1.children).forEach((item) => {
+          if (!(item instanceof HTMLDivElement)) return;
+          const button = item;
+          button.style.transform = `rotate(${newRotationValue * -1}deg)`;
+          button.style.transition = `transform ${
+            Math.abs(angle) * 10
+          }ms linear`;
+        });
+      }
+      // onClick?.(index);
+    },
+    [
+      buttonRadius,
+      singleAngle,
+      switcherMiddle,
+      switcherRadius,
+      targetPositionX,
+      targetPositionY,
+    ]
+  );
+
+  useEffect(() => {
+    if (activeIndex !== activeButton) handleButtonClickTest(activeIndex);
+  }, [activeButton, activeIndex, handleButtonClickTest]);
 
   useEffect(() => {
     const switcher = switcherWrapperRef.current;
@@ -74,7 +170,6 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
     setIsTransitionEnd(false);
     const selectedButton = event.currentTarget;
     setActiveButton(Number(selectedButton.innerText));
-
     const selectedButtonDimensions = selectedButton.getBoundingClientRect();
     const selectedButtonX = selectedButtonDimensions.x + buttonRadius;
     const selectedButtonY = selectedButtonDimensions.y + buttonRadius;
@@ -125,6 +220,7 @@ const Switcher: FC<Props> = ({ switcherButtonsItems }) => {
         button.style.transition = `transform ${Math.abs(angle) * 10}ms linear`;
       });
     }
+    onClick?.(Number(selectedButton.innerText));
   };
 
   const switcherWrapperRef = useRef<HTMLDivElement>(null);
