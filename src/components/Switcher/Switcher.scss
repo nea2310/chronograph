@@ -1,5 +1,5 @@
-@import '../../styles/_mixins';
-@import '../../styles/_vars';
+@import '../../styles/mixins';
+@import '../../styles/vars';
 
 .switcher {
   &__wrapper {
@@ -9,7 +9,7 @@
     justify-content: center;
     box-sizing: border-box;
     width: 100%;
-    border: 1px solid $switcherBorderColor;
+    border: 1px solid $switcher-border-color;
     border-radius: 50%;
     aspect-ratio: 1/1;
   }
@@ -32,8 +32,8 @@
 
     &_active,
     &:hover {
-      background: $backgroundColor;
-      border: 1px solid $buttonBorderColor;
+      background: $background-color;
+      border: 1px solid $button-border-color;
       transition: $transition;
     }
   }
@@ -44,7 +44,7 @@
     width: 6px;
     height: 6px;
     font-size: 1px;
-    background-color: $textColor;
+    background-color: $text-color;
     border-radius: 50%;
     visibility: visible;
     cursor: pointer;
