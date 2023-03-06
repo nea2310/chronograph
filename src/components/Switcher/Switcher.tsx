@@ -42,56 +42,49 @@ const Switcher: FC<Props> = ({
       const selectedButtonX = selectedButtonDimensions.x + buttonRadius;
       const selectedButtonY = selectedButtonDimensions.y + buttonRadius;
 
-      if (switcherWrapperRef.current) {
-        const switcher = switcherWrapperRef.current;
+      if (!switcherWrapperRef.current) return;
+      const switcher = switcherWrapperRef.current;
+      const distance = Math.sqrt(
+        (selectedButtonX - targetPositionX) ** 2 +
+          (selectedButtonY - targetPositionY) ** 2
+      );
+      let cos =
+        (switcherRadius ** 2 * 2 - distance ** 2) / (switcherRadius ** 2 * 2);
+      if (cos < -1) cos = -1;
 
-        const distance = Math.sqrt(
-          (selectedButtonX - targetPositionX) ** 2 +
-            (selectedButtonY - targetPositionY) ** 2
-        );
-        let cos =
-          (switcherRadius ** 2 * 2 - distance ** 2) / (switcherRadius ** 2 * 2);
-        if (cos < -1) cos = -1;
+      let angle = (Math.acos(cos) * 180) / Math.PI;
+      angle = Math.round(angle / singleAngle) * singleAngle;
 
-        let angle = (Math.acos(cos) * 180) / Math.PI;
-        angle = Math.round(angle / singleAngle) * singleAngle;
+      if (selectedButtonX > switcherMiddle) angle *= -1;
 
-        if (selectedButtonX > switcherMiddle) {
-          angle *= -1;
-        }
-
-        const rotationPropertyValue = switcher.style.transform;
-        let newRotationValue = 0;
-        if (rotationPropertyValue) {
-          const currentRotationValue =
-            rotationPropertyValue.match(/rotate\(([-\d]*)/);
-          if (currentRotationValue)
-            newRotationValue = Number(currentRotationValue[1]);
-        }
-
-        newRotationValue = newRotationValue ? angle + newRotationValue : angle;
-        if (newRotationValue >= 360) {
-          newRotationValue -= 360;
-          angle = 360 - angle;
-        }
-        if (newRotationValue <= -360) {
-          newRotationValue += 360;
-          angle = -360 - angle;
-        }
-
-        switcher.style.transform = `rotate(${newRotationValue}deg)`;
-        switcher.style.transition = `transform ${
-          Math.abs(angle) * 10
-        }ms linear`;
-        Array.from(switcher.children).forEach((item) => {
-          if (!(item instanceof HTMLDivElement)) return;
-          const button = item;
-          button.style.transform = `rotate(${newRotationValue * -1}deg)`;
-          button.style.transition = `transform ${
-            Math.abs(angle) * 10
-          }ms linear`;
-        });
+      const rotationPropertyValue = switcher.style.transform;
+      let newRotationValue = 0;
+      if (rotationPropertyValue) {
+        const currentRotationValue =
+          rotationPropertyValue.match(/rotate\(([-\d]*)/);
+        if (currentRotationValue)
+          newRotationValue = Number(currentRotationValue[1]);
       }
+
+      newRotationValue = newRotationValue ? angle + newRotationValue : angle;
+      if (newRotationValue >= 360) {
+        newRotationValue -= 360;
+        angle = 360 - angle;
+      }
+      if (newRotationValue <= -360) {
+        newRotationValue += 360;
+        angle = -360 - angle;
+      }
+
+      switcher.style.transform = `rotate(${newRotationValue}deg)`;
+      switcher.style.transition = `transform ${Math.abs(angle) * 10}ms linear`;
+
+      Array.from(switcher.children).forEach((item) => {
+        if (!(item instanceof HTMLDivElement)) return;
+        const button = item;
+        button.style.transform = `rotate(${newRotationValue * -1}deg)`;
+        button.style.transition = `transform ${Math.abs(angle) * 10}ms linear`;
+      });
     },
     [
       buttonRadius,
@@ -126,18 +119,18 @@ const Switcher: FC<Props> = ({
     if (!switcher || !switcherWrapper) return;
 
     const buttons = switcher.querySelectorAll('.switcher__button-wrapper');
-    let shift = 0;
-    if (buttons?.[0] instanceof HTMLDivElement) {
-      shift = buttons[0].offsetHeight / 2;
-      setSingleAngle(360 / buttons.length);
-      setButtonRadius(shift);
-      switcherWrapper.style.paddingLeft = `${shift}px`;
-      switcherWrapper.style.paddingRight = `${shift}px`;
-    }
-    const switchDiameter = switcher.offsetHeight;
+    if (!(buttons?.[0] instanceof HTMLElement)) return;
 
-    if (switchDiameter) {
-      const radius = switchDiameter / 2;
+    const shift = buttons[0].offsetHeight / 2;
+    setSingleAngle(360 / buttons.length);
+    setButtonRadius(shift);
+    switcherWrapper.style.paddingLeft = `${shift}px`;
+    switcherWrapper.style.paddingRight = `${shift}px`;
+
+    const switcherDiameter = switcher.offsetHeight;
+
+    if (switcherDiameter) {
+      const radius = switcherDiameter / 2;
       setSwitcherRadius(radius);
       setSwitcherMiddle(Number(switcher.getBoundingClientRect().x) + radius);
       // eslint-disable-next-line no-plusplus
@@ -152,16 +145,13 @@ const Switcher: FC<Props> = ({
       }
     }
 
-    if (buttons?.[0] instanceof HTMLDivElement) {
-      const buttonDimensions = buttons[0].getBoundingClientRect();
-      setTargetPositionX(buttonDimensions.x + shift);
-      setTargetPositionY(buttonDimensions.y + shift);
-    }
+    if (!(buttons?.[0] instanceof HTMLElement)) return;
+    const buttonDimensions = buttons[0].getBoundingClientRect();
+    setTargetPositionX(buttonDimensions.x + shift);
+    setTargetPositionY(buttonDimensions.y + shift);
   }, []);
 
-  const handleTransitionEnd = (
-    event: React.TransitionEvent<HTMLDivElement>
-  ) => {
+  const handleTransitionEnd = (event: React.TransitionEvent<HTMLElement>) => {
     if (event.target !== event.currentTarget) return;
     setIsTransitionEnd(true);
   };
@@ -176,6 +166,7 @@ const Switcher: FC<Props> = ({
 
   const switcherWrapperRef = useRef<HTMLDivElement>(null);
   const switcherRef = useRef<HTMLDivElement>(null);
+
   return (
     <div ref={switcherRef} className="switcher">
       <div
