@@ -160,6 +160,8 @@ const Switcher: FC<Props> = ({
     [rotate]
   );
 
+  useEffect(() => render(), [render]);
+
   useEffect(() => {
     const handleWindowResize = () => {
       render();
@@ -176,48 +178,9 @@ const Switcher: FC<Props> = ({
       handleActiveIndexChange(activeButtonIndex);
   }, [activeButton, activeButtonIndex, handleActiveIndexChange]);
 
-  useEffect(() => {
-    const switcher = switcherWrapperRef.current;
-    const switcherWrapper = switcherRef.current;
-    if (!switcher || !switcherWrapper) return;
-
-    const buttons = switcher.querySelectorAll('.switcher__button-wrapper');
-    if (!(buttons?.[0] instanceof HTMLElement)) return;
-
-    const shift = buttons[0].offsetHeight / 2;
-    setSingleAngle(CIRCLE / buttons.length);
-    setButtonRadius(shift);
-    switcherWrapper.style.paddingLeft = `${shift}px`;
-    switcherWrapper.style.paddingRight = `${shift}px`;
-
-    const switcherDiameter = switcher.offsetHeight;
-
-    if (switcherDiameter) {
-      const radius = switcherDiameter / 2;
-      setSwitcherRadius(radius);
-      setSwitcherMiddle(Number(switcher.getBoundingClientRect().x) + radius);
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i <= buttons.length; i++) {
-        const button = buttons[i];
-        if (!(button instanceof HTMLElement)) break;
-        const angle =
-          (2 / buttons.length) * i * Math.PI * -1 + defaultAngleRatio;
-        const left = `${radius * Math.sin(angle) + radius - shift}px`;
-        const top = `${radius * Math.cos(angle) + radius - shift}px`;
-        button.style.left = left;
-        button.style.top = top;
-      }
-    }
-
-    if (!(buttons?.[0] instanceof HTMLElement)) return;
-    const buttonDimensions = buttons[0].getBoundingClientRect();
-    setTargetPositionX(buttonDimensions.x + shift);
-    setTargetPositionY(buttonDimensions.y + shift);
-  }, [defaultAngleRatio]);
-
-  useEffect(() => render(), [render]);
-
-  const handleTransitionEnd = (event: React.TransitionEvent<HTMLElement>) => {
+  const handleSwitcherTransitionEnd = (
+    event: React.TransitionEvent<HTMLElement>
+  ) => {
     if (event.target !== event.currentTarget) return;
     setIsTransitionEnd(true);
   };
@@ -238,7 +201,7 @@ const Switcher: FC<Props> = ({
       <div
         className="switcher__wrapper"
         ref={switcherWrapperRef}
-        onTransitionEnd={(event) => handleTransitionEnd(event)}
+        onTransitionEnd={(event) => handleSwitcherTransitionEnd(event)}
       >
         {switcherButtons.map(({ index, label }) => (
           <div
