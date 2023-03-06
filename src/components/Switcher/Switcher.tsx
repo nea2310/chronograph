@@ -8,30 +8,36 @@ import {
 } from 'react';
 import classnames from 'classnames';
 
+import { CIRCLE, MAX_BUTTONS_AMOUNTS } from '../../shared/constants';
+
 import './Switcher.scss';
 
 type Props = {
   switcherButtonsItems: { index: number; label: string }[];
-  activeIndex?: number;
+  activeButtonIndex?: number;
+  defaultAngleRatio?: number;
+  defaultRotateSpeedRatio?: number;
   onClick?: (activeIndex: number) => void;
 };
 
 const Switcher: FC<Props> = ({
   switcherButtonsItems,
-  activeIndex = 1,
+  activeButtonIndex = 1,
+  defaultAngleRatio = 2.618,
+  defaultRotateSpeedRatio = 10,
   onClick,
 }) => {
   const switcherButtons =
-    switcherButtonsItems.length <= 6
+    switcherButtonsItems.length <= MAX_BUTTONS_AMOUNTS
       ? switcherButtonsItems
-      : switcherButtonsItems.slice(0, 6);
+      : switcherButtonsItems.slice(0, MAX_BUTTONS_AMOUNTS);
   const [targetPositionX, setTargetPositionX] = useState(0);
   const [targetPositionY, setTargetPositionY] = useState(0);
   const [switcherMiddle, setSwitcherMiddle] = useState(0);
   const [switcherRadius, setSwitcherRadius] = useState(0);
   const [buttonRadius, setButtonRadius] = useState(0);
   const [singleAngle, setSingleAngle] = useState(0);
-  const [activeButton, setActiveButton] = useState(activeIndex);
+  const [activeButton, setActiveButton] = useState(activeButtonIndex);
   const [isTransitionEnd, setIsTransitionEnd] = useState(true);
 
   const rotate = useCallback(
@@ -67,27 +73,32 @@ const Switcher: FC<Props> = ({
       }
 
       newRotationValue = newRotationValue ? angle + newRotationValue : angle;
-      if (newRotationValue >= 360) {
-        newRotationValue -= 360;
-        angle = 360 - angle;
+      if (newRotationValue >= CIRCLE) {
+        newRotationValue -= CIRCLE;
+        angle = CIRCLE - angle;
       }
-      if (newRotationValue <= -360) {
-        newRotationValue += 360;
-        angle = -360 - angle;
+      if (newRotationValue <= CIRCLE * -1) {
+        newRotationValue += CIRCLE;
+        angle = CIRCLE * -1 - angle;
       }
 
       switcher.style.transform = `rotate(${newRotationValue}deg)`;
-      switcher.style.transition = `transform ${Math.abs(angle) * 10}ms linear`;
+      switcher.style.transition = `transform ${
+        Math.abs(angle) * defaultRotateSpeedRatio
+      }ms linear`;
 
       Array.from(switcher.children).forEach((item) => {
         if (!(item instanceof HTMLDivElement)) return;
         const button = item;
         button.style.transform = `rotate(${newRotationValue * -1}deg)`;
-        button.style.transition = `transform ${Math.abs(angle) * 10}ms linear`;
+        button.style.transition = `transform ${
+          Math.abs(angle) * defaultRotateSpeedRatio
+        }ms linear`;
       });
     },
     [
       buttonRadius,
+      defaultRotateSpeedRatio,
       singleAngle,
       switcherMiddle,
       switcherRadius,
@@ -98,7 +109,7 @@ const Switcher: FC<Props> = ({
 
   const handleActiveIndexChange = useCallback(
     (index: number) => {
-      if (index > 6 || index < 1) return;
+      if (index > MAX_BUTTONS_AMOUNTS || index < 1) return;
       const switcher = switcherWrapperRef.current;
       if (!switcher) return;
       const buttons = switcher.querySelectorAll('.switcher__button-wrapper');
@@ -110,8 +121,9 @@ const Switcher: FC<Props> = ({
   );
 
   useEffect(() => {
-    if (activeIndex !== activeButton) handleActiveIndexChange(activeIndex);
-  }, [activeButton, activeIndex, handleActiveIndexChange]);
+    if (activeButtonIndex !== activeButton)
+      handleActiveIndexChange(activeButtonIndex);
+  }, [activeButton, activeButtonIndex, handleActiveIndexChange]);
 
   useEffect(() => {
     const switcher = switcherWrapperRef.current;
@@ -122,7 +134,7 @@ const Switcher: FC<Props> = ({
     if (!(buttons?.[0] instanceof HTMLElement)) return;
 
     const shift = buttons[0].offsetHeight / 2;
-    setSingleAngle(360 / buttons.length);
+    setSingleAngle(CIRCLE / buttons.length);
     setButtonRadius(shift);
     switcherWrapper.style.paddingLeft = `${shift}px`;
     switcherWrapper.style.paddingRight = `${shift}px`;
@@ -137,7 +149,8 @@ const Switcher: FC<Props> = ({
       for (let i = 0; i <= buttons.length; i++) {
         const button = buttons[i];
         if (!(button instanceof HTMLElement)) break;
-        const angle = (2 / buttons.length) * i * Math.PI * -1 + 2.618;
+        const angle =
+          (2 / buttons.length) * i * Math.PI * -1 + defaultAngleRatio;
         const left = `${radius * Math.sin(angle) + radius - shift}px`;
         const top = `${radius * Math.cos(angle) + radius - shift}px`;
         button.style.left = left;
@@ -149,7 +162,7 @@ const Switcher: FC<Props> = ({
     const buttonDimensions = buttons[0].getBoundingClientRect();
     setTargetPositionX(buttonDimensions.x + shift);
     setTargetPositionY(buttonDimensions.y + shift);
-  }, []);
+  }, [defaultAngleRatio]);
 
   const handleTransitionEnd = (event: React.TransitionEvent<HTMLElement>) => {
     if (event.target !== event.currentTarget) return;

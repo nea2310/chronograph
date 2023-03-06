@@ -2,6 +2,10 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import { FC, useCallback, useState } from 'react';
 
+import {
+  MAX_BUTTONS_AMOUNTS,
+  MIN_BUTTONS_AMOUNTS,
+} from '../../shared/constants';
 import { Switcher } from '../Switcher/Switcher';
 
 import './Controller.scss';
@@ -22,16 +26,16 @@ const Controller: FC<Props> = ({ data }) => {
 
   const handleNextButtonClick = () => {
     const index = currentCategory + 1;
-    if (index > 6) return;
-    if (index > 5) setIsNextButtonActive(false);
+    if (index > MAX_BUTTONS_AMOUNTS) return;
+    if (index > MAX_BUTTONS_AMOUNTS - 1) setIsNextButtonActive(false);
     if (currentCategory !== index) setCurrentCategory(index);
     if (!isPrevButtonActive) setIsPrevButtonActive(true);
   };
 
   const handlePrevButtonClick = () => {
     const index = currentCategory - 1;
-    if (index < 1) return;
-    if (index < 2) setIsPrevButtonActive(false);
+    if (index < MIN_BUTTONS_AMOUNTS - 1) return;
+    if (index < MIN_BUTTONS_AMOUNTS) setIsPrevButtonActive(false);
     if (currentCategory !== index) setCurrentCategory(index);
     if (!isNextButtonActive) setIsNextButtonActive(true);
   };
@@ -39,21 +43,26 @@ const Controller: FC<Props> = ({ data }) => {
   const handleSwitcherClick = useCallback(
     (activeButton: number) => {
       setCurrentCategory(activeButton);
-      if (activeButton > 1 && !isPrevButtonActive) setIsPrevButtonActive(true);
-      if (activeButton < 6 && !isNextButtonActive) setIsNextButtonActive(true);
-      if (activeButton > 5) setIsNextButtonActive(false);
-      if (activeButton < 2) setIsPrevButtonActive(false);
+      if (activeButton > MIN_BUTTONS_AMOUNTS - 1 && !isPrevButtonActive)
+        setIsPrevButtonActive(true);
+      if (activeButton < MAX_BUTTONS_AMOUNTS && !isNextButtonActive)
+        setIsNextButtonActive(true);
+      if (activeButton > MAX_BUTTONS_AMOUNTS - 1) setIsNextButtonActive(false);
+      if (activeButton < MIN_BUTTONS_AMOUNTS) setIsPrevButtonActive(false);
     },
     [isNextButtonActive, isPrevButtonActive]
   );
 
   return (
     <div className="controller">
-      <Switcher
-        switcherButtonsItems={data}
-        activeIndex={currentCategory}
-        onClick={handleSwitcherClick}
-      />
+      {data.length >= MIN_BUTTONS_AMOUNTS &&
+        data.length <= MAX_BUTTONS_AMOUNTS && (
+          <Switcher
+            switcherButtonsItems={data}
+            activeButtonIndex={currentCategory}
+            onClick={handleSwitcherClick}
+          />
+        )}
       <span className="controller__counter">{`${currentCategory}/${data.length}`}</span>
       <button
         type="button"
