@@ -1,13 +1,5 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import {
-  FC,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import classnames from 'classnames';
+import { FC, useCallback, useState } from 'react';
 
 import { Switcher } from '../Switcher/Switcher';
 
@@ -24,34 +16,35 @@ type Props = {
 
 const Controller: FC<Props> = ({ data }) => {
   const [currentCategory, setCurrentCategory] = useState(data[0].index);
-  // console.log('currentCategory>>>', currentCategory);
+  const [isNextButtonActive, setIsNextButtonActive] = useState(true);
+  const [isPrevButtonActive, setIsPrevButtonActive] = useState(false);
 
   const handleNextButtonClick = () => {
     const index = currentCategory + 1;
-    console.log(
-      'handleNextButtonClick currentCategory>>>',
-      currentCategory,
-      'index>>>',
-      index
-    );
-    if (index > 6 || index < 1) return;
+    if (index > 6) return;
+    if (index > 5) setIsNextButtonActive(false);
     if (currentCategory !== index) setCurrentCategory(index);
-  };
-  const handlePrevButtonClick = () => {
-    const index = currentCategory - 1;
-    console.log(
-      'handlePrevButtonClick currentCategory>>>',
-      currentCategory,
-      'index>>>',
-      index
-    );
-    if (index > 6 || index < 1) return;
-    if (currentCategory !== index) setCurrentCategory(index);
+    if (!isPrevButtonActive) setIsPrevButtonActive(true);
   };
 
-  const handleSwitcherClick = useCallback((activeButton: number) => {
-    setCurrentCategory(activeButton);
-  }, []);
+  const handlePrevButtonClick = () => {
+    const index = currentCategory - 1;
+    if (index < 1) return;
+    if (index < 2) setIsPrevButtonActive(false);
+    if (currentCategory !== index) setCurrentCategory(index);
+    if (!isNextButtonActive) setIsNextButtonActive(true);
+  };
+
+  const handleSwitcherClick = useCallback(
+    (activeButton: number) => {
+      setCurrentCategory(activeButton);
+      if (activeButton > 1 && !isPrevButtonActive) setIsPrevButtonActive(true);
+      if (activeButton < 6 && !isNextButtonActive) setIsNextButtonActive(true);
+      if (activeButton > 5) setIsNextButtonActive(false);
+      if (activeButton < 2) setIsPrevButtonActive(false);
+    },
+    [isNextButtonActive, isPrevButtonActive]
+  );
 
   return (
     <div className="controller">
@@ -62,11 +55,13 @@ const Controller: FC<Props> = ({ data }) => {
       />
       <button
         type="button"
+        disabled={!isPrevButtonActive}
         className="controller__button controller__button-prev"
         onClick={handlePrevButtonClick}
       />
       <button
         type="button"
+        disabled={!isNextButtonActive}
         className="controller__button controller__button-next"
         onClick={handleNextButtonClick}
       />

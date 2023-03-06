@@ -15,6 +15,11 @@
     border-radius: 50%;
     cursor: pointer;
 
+    &:disabled{
+      opacity: 0.5;
+      cursor: auto;
+    }
+
     &::after {
       @include tip-style;
     }

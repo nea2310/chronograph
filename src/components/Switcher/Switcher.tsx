@@ -33,25 +33,17 @@ const Switcher: FC<Props> = ({
   const [singleAngle, setSingleAngle] = useState(0);
   const [activeButton, setActiveButton] = useState(activeIndex);
   const [isTransitionEnd, setIsTransitionEnd] = useState(true);
-  console.log('activeButton>>>', activeButton);
-  const handleButtonClickTest = useCallback(
-    (index: number) => {
-      if (index > 6 || index < 1) return;
-      const switcher = switcherWrapperRef.current;
-      if (!switcher || index > 6 || index < 0) return;
-      const buttons = switcher.querySelectorAll('.switcher__button-wrapper');
-      const selectedButton = Array.from(buttons)[
-        index - 1
-      ] as HTMLButtonElement;
-      setIsTransitionEnd(false);
 
-      setActiveButton(index);
+  const rotate = useCallback(
+    (selectedButton: HTMLElement) => {
+      setIsTransitionEnd(false);
+      setActiveButton(Number(selectedButton.getAttribute('data-index')));
       const selectedButtonDimensions = selectedButton.getBoundingClientRect();
       const selectedButtonX = selectedButtonDimensions.x + buttonRadius;
       const selectedButtonY = selectedButtonDimensions.y + buttonRadius;
 
       if (switcherWrapperRef.current) {
-        const switcher1 = switcherWrapperRef.current;
+        const switcher = switcherWrapperRef.current;
 
         const distance = Math.sqrt(
           (selectedButtonX - targetPositionX) ** 2 +
@@ -68,7 +60,7 @@ const Switcher: FC<Props> = ({
           angle *= -1;
         }
 
-        const rotationPropertyValue = switcher1.style.transform;
+        const rotationPropertyValue = switcher.style.transform;
         let newRotationValue = 0;
         if (rotationPropertyValue) {
           const currentRotationValue =
@@ -82,17 +74,16 @@ const Switcher: FC<Props> = ({
           newRotationValue -= 360;
           angle = 360 - angle;
         }
-
         if (newRotationValue <= -360) {
           newRotationValue += 360;
           angle = -360 - angle;
         }
 
-        switcher1.style.transform = `rotate(${newRotationValue}deg)`;
-        switcher1.style.transition = `transform ${
+        switcher.style.transform = `rotate(${newRotationValue}deg)`;
+        switcher.style.transition = `transform ${
           Math.abs(angle) * 10
         }ms linear`;
-        Array.from(switcher1.children).forEach((item) => {
+        Array.from(switcher.children).forEach((item) => {
           if (!(item instanceof HTMLDivElement)) return;
           const button = item;
           button.style.transform = `rotate(${newRotationValue * -1}deg)`;
@@ -101,7 +92,6 @@ const Switcher: FC<Props> = ({
           }ms linear`;
         });
       }
-      // onClick?.(index);
     },
     [
       buttonRadius,
@@ -113,9 +103,22 @@ const Switcher: FC<Props> = ({
     ]
   );
 
+  const handleActiveIndexChange = useCallback(
+    (index: number) => {
+      if (index > 6 || index < 1) return;
+      const switcher = switcherWrapperRef.current;
+      if (!switcher) return;
+      const buttons = switcher.querySelectorAll('.switcher__button-wrapper');
+      const selectedButton =
+        Array.from(buttons)[index - 1].querySelector('.switcher__button');
+      if (selectedButton instanceof HTMLElement) rotate(selectedButton);
+    },
+    [rotate]
+  );
+
   useEffect(() => {
-    if (activeIndex !== activeButton) handleButtonClickTest(activeIndex);
-  }, [activeButton, activeIndex, handleButtonClickTest]);
+    if (activeIndex !== activeButton) handleActiveIndexChange(activeIndex);
+  }, [activeButton, activeIndex, handleActiveIndexChange]);
 
   useEffect(() => {
     const switcher = switcherWrapperRef.current;
@@ -167,60 +170,9 @@ const Switcher: FC<Props> = ({
   const handleButtonClick = (
     event: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
   ) => {
-    setIsTransitionEnd(false);
     const selectedButton = event.currentTarget;
-    setActiveButton(Number(selectedButton.innerText));
-    const selectedButtonDimensions = selectedButton.getBoundingClientRect();
-    const selectedButtonX = selectedButtonDimensions.x + buttonRadius;
-    const selectedButtonY = selectedButtonDimensions.y + buttonRadius;
-
-    if (switcherWrapperRef.current) {
-      const switcher = switcherWrapperRef.current;
-
-      const distance = Math.sqrt(
-        (selectedButtonX - targetPositionX) ** 2 +
-          (selectedButtonY - targetPositionY) ** 2
-      );
-      let cos =
-        (switcherRadius ** 2 * 2 - distance ** 2) / (switcherRadius ** 2 * 2);
-      if (cos < -1) cos = -1;
-
-      let angle = (Math.acos(cos) * 180) / Math.PI;
-      angle = Math.round(angle / singleAngle) * singleAngle;
-
-      if (selectedButtonX > switcherMiddle) {
-        angle *= -1;
-      }
-
-      const rotationPropertyValue = switcher.style.transform;
-      let newRotationValue = 0;
-      if (rotationPropertyValue) {
-        const currentRotationValue =
-          rotationPropertyValue.match(/rotate\(([-\d]*)/);
-        if (currentRotationValue)
-          newRotationValue = Number(currentRotationValue[1]);
-      }
-
-      newRotationValue = newRotationValue ? angle + newRotationValue : angle;
-      if (newRotationValue >= 360) {
-        newRotationValue -= 360;
-        angle = 360 - angle;
-      }
-      if (newRotationValue <= -360) {
-        newRotationValue += 360;
-        angle = -360 - angle;
-      }
-
-      switcher.style.transform = `rotate(${newRotationValue}deg)`;
-      switcher.style.transition = `transform ${Math.abs(angle) * 10}ms linear`;
-      Array.from(switcher.children).forEach((item) => {
-        if (!(item instanceof HTMLDivElement)) return;
-        const button = item;
-        button.style.transform = `rotate(${newRotationValue * -1}deg)`;
-        button.style.transition = `transform ${Math.abs(angle) * 10}ms linear`;
-      });
-    }
-    onClick?.(Number(selectedButton.innerText));
+    rotate(selectedButton);
+    onClick?.(Number(selectedButton.getAttribute('data-index')));
   };
 
   const switcherWrapperRef = useRef<HTMLDivElement>(null);
@@ -242,6 +194,7 @@ const Switcher: FC<Props> = ({
             <button
               className="switcher__button"
               type="button"
+              data-index={String(index)}
               onClick={(event) => handleButtonClick(event)}
             >
               <span className="switcher__button-index">{index}</span>
