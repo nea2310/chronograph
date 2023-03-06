@@ -9,6 +9,7 @@ import {
 import classnames from 'classnames';
 
 import { CIRCLE, MAX_BUTTONS_AMOUNTS } from '../../shared/constants';
+import { throttle } from '../../shared/helpers/throttle/throttle';
 
 import './Switcher.scss';
 
@@ -39,6 +40,45 @@ const Switcher: FC<Props> = ({
   const [singleAngle, setSingleAngle] = useState(0);
   const [activeButton, setActiveButton] = useState(activeButtonIndex);
   const [isTransitionEnd, setIsTransitionEnd] = useState(true);
+
+  const render = useCallback(() => {
+    const switcher = switcherWrapperRef.current;
+    const switcherWrapper = switcherRef.current;
+    if (!switcher || !switcherWrapper) return;
+
+    const buttons = switcher.querySelectorAll('.switcher__button-wrapper');
+    if (!(buttons?.[0] instanceof HTMLElement)) return;
+
+    const shift = buttons[0].offsetHeight / 2;
+    setSingleAngle(CIRCLE / buttons.length);
+    setButtonRadius(shift);
+    switcherWrapper.style.paddingLeft = `${shift}px`;
+    switcherWrapper.style.paddingRight = `${shift}px`;
+
+    const switcherDiameter = switcher.offsetHeight;
+
+    if (switcherDiameter) {
+      const radius = switcherDiameter / 2;
+      setSwitcherRadius(radius);
+      setSwitcherMiddle(Number(switcher.getBoundingClientRect().x) + radius);
+      // eslint-disable-next-line no-plusplus
+      for (let i = 0; i <= buttons.length; i++) {
+        const button = buttons[i];
+        if (!(button instanceof HTMLElement)) break;
+        const angle =
+          (2 / buttons.length) * i * Math.PI * -1 + defaultAngleRatio;
+        const left = `${radius * Math.sin(angle) + radius - shift}px`;
+        const top = `${radius * Math.cos(angle) + radius - shift}px`;
+        button.style.left = left;
+        button.style.top = top;
+      }
+    }
+
+    if (!(buttons?.[0] instanceof HTMLElement)) return;
+    const buttonDimensions = buttons[0].getBoundingClientRect();
+    setTargetPositionX(buttonDimensions.x + shift);
+    setTargetPositionY(buttonDimensions.y + shift);
+  }, [defaultAngleRatio]);
 
   const rotate = useCallback(
     (selectedButton: HTMLElement) => {
@@ -121,6 +161,17 @@ const Switcher: FC<Props> = ({
   );
 
   useEffect(() => {
+    const handleWindowResize = () => {
+      render();
+    };
+
+    const throttledHandleWindowResize = throttle(handleWindowResize, 250);
+    window.addEventListener('resize', throttledHandleWindowResize);
+
+    return () => window.removeEventListener('resize', handleWindowResize);
+  }, [render]);
+
+  useEffect(() => {
     if (activeButtonIndex !== activeButton)
       handleActiveIndexChange(activeButtonIndex);
   }, [activeButton, activeButtonIndex, handleActiveIndexChange]);
@@ -163,6 +214,8 @@ const Switcher: FC<Props> = ({
     setTargetPositionX(buttonDimensions.x + shift);
     setTargetPositionY(buttonDimensions.y + shift);
   }, [defaultAngleRatio]);
+
+  useEffect(() => render(), [render]);
 
   const handleTransitionEnd = (event: React.TransitionEvent<HTMLElement>) => {
     if (event.target !== event.currentTarget) return;
