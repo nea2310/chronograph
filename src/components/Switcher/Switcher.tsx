@@ -144,8 +144,7 @@ const Switcher: FC<Props> = ({
       for (let i = 0; i <= buttons.length; i++) {
         const button = buttons[i];
         if (!(button instanceof HTMLElement)) break;
-        const angle = (2 / buttons.length) * i * Math.PI + 2.618;
-
+        const angle = (2 / buttons.length) * i * Math.PI * -1 + 2.618;
         const left = `${radius * Math.sin(angle) + radius - shift}px`;
         const top = `${radius * Math.cos(angle) + radius - shift}px`;
         button.style.left = left;
