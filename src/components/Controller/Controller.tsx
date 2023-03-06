@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import { FC, useCallback, useState } from 'react';
 
@@ -53,6 +54,7 @@ const Controller: FC<Props> = ({ data }) => {
         activeIndex={currentCategory}
         onClick={handleSwitcherClick}
       />
+      <span className="controller__counter">{`${currentCategory}/${data.length}`}</span>
       <button
         type="button"
         disabled={!isPrevButtonActive}
