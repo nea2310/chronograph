@@ -17,3 +17,11 @@
   content: '';
   aspect-ratio: 1/1;
 }
+
+@mixin font-main($font-size, $font-weight, $line-height ){
+  font-family: $font-main;
+  font-size: $font-size;
+  font-weight: $font-weight;
+  color: $text-color;
+  line-height: $line-height;
+}

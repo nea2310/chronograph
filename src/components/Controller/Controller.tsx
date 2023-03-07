@@ -55,27 +55,38 @@ const Controller: FC<Props> = ({ data }) => {
 
   return (
     <div className="controller">
+      <h1 className="controller__header">Исторические даты</h1>
       {data.length >= MIN_BUTTONS_AMOUNTS &&
         data.length <= MAX_BUTTONS_AMOUNTS && (
-          <Switcher
-            switcherButtonsItems={data}
-            activeButtonIndex={currentCategory}
-            onClick={handleSwitcherClick}
-          />
+          <div className="controller__switcher">
+            <Switcher
+              switcherButtonsItems={data}
+              activeButtonIndex={currentCategory}
+              onClick={handleSwitcherClick}
+            />
+          </div>
         )}
-      <span className="controller__counter">{`${currentCategory}/${data.length}`}</span>
-      <button
-        type="button"
-        disabled={!isPrevButtonActive}
-        className="controller__button controller__button-prev"
-        onClick={handlePrevButtonClick}
-      />
-      <button
-        type="button"
-        disabled={!isNextButtonActive}
-        className="controller__button controller__button-next"
-        onClick={handleNextButtonClick}
-      />
+      <span className="controller__counter">{`${
+        currentCategory < 10
+          ? `0${String(currentCategory)}`
+          : String(currentCategory)
+      }/${
+        data.length < 10 ? `0${String(data.length)}` : String(data.length)
+      }`}</span>
+      <div className="controller__buttons">
+        <button
+          type="button"
+          disabled={!isPrevButtonActive}
+          className="controller__button controller__button-prev"
+          onClick={handlePrevButtonClick}
+        />
+        <button
+          type="button"
+          disabled={!isNextButtonActive}
+          className="controller__button controller__button-next"
+          onClick={handleNextButtonClick}
+        />
+      </div>
     </div>
   );
 };

@@ -24,7 +24,7 @@ type Props = {
 const Switcher: FC<Props> = ({
   switcherButtonsItems,
   activeButtonIndex = 1,
-  defaultAngleRatio = 2.618,
+  defaultAngleRatio = 2.71,
   defaultRotateSpeedRatio = 10,
   onClick,
 }) => {
@@ -52,8 +52,7 @@ const Switcher: FC<Props> = ({
     const shift = buttons[0].offsetHeight / 2;
     setSingleAngle(CIRCLE / buttons.length);
     setButtonRadius(shift);
-    switcherWrapper.style.paddingLeft = `${shift}px`;
-    switcherWrapper.style.paddingRight = `${shift}px`;
+    // switcherWrapper.style.padding = `${shift}px`;
 
     const switcherDiameter = switcher.offsetHeight;
 
@@ -67,8 +66,8 @@ const Switcher: FC<Props> = ({
         if (!(button instanceof HTMLElement)) break;
         const angle =
           (2 / buttons.length) * i * Math.PI * -1 + defaultAngleRatio;
-        const left = `${radius * Math.sin(angle) + radius - shift}px`;
-        const top = `${radius * Math.cos(angle) + radius - shift}px`;
+        const left = `${radius * Math.sin(angle) + radius - shift + 2}px`;
+        const top = `${radius * Math.cos(angle) + radius - shift + 2}px`;
         button.style.left = left;
         button.style.top = top;
       }
