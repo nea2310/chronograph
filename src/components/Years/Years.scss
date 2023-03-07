@@ -3,23 +3,19 @@
 
 .years {
   @include font-main(200px, 700, 160px);
-  cursor: default;
-  padding-bottom: 100px;
 
   display: flex;
-  column-gap: 95px;
+  padding-bottom: 100px;
   letter-spacing: -4px;
-
+  column-gap: 95px;
+  cursor: default;
 
   &__year_type_from {
     color: $date-from-color;
-  
-   
   }
 
   &__year_type_to {
-    color: $date-to-color;
     padding-right: 40px;
-
+    color: $date-to-color;
   }
 }

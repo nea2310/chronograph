@@ -10,7 +10,6 @@
       1fr
     );
   padding-top: 166px;
-
   border-right: 1px solid $grid-color;
   border-left: 1px solid $grid-color;
 
@@ -35,22 +34,23 @@
 
   &__header {
     @include font-main(56px, 700, 67.2px);
-    cursor: default;
+
+    position: relative;
     grid-row: 1/2;
     grid-column: 2/3;
     box-sizing: border-box;
     max-width: 353px;
     margin: 0;
-    position: relative;
+    cursor: default;
 
     &::before {
-      content: '';
-      width: 5px;
-      height: calc(100% - 15px);
+      position: absolute;
       top: 11px;
       left: -80px;
+      width: 5px;
+      height: calc(100% - 15px);
       background: $gradient;
-      position: absolute;
+      content: '';
     }
   }
 
@@ -68,10 +68,11 @@
 
   &__counter {
     @include font-main(15px, 400, 18px);
-    cursor: default;
+
     grid-row: 2/3;
     grid-column: 2/3;
     padding-top: 395px;
+    cursor: default;
   }
 
   &__buttons {
@@ -118,12 +119,10 @@
     justify-self: center;
   }
 
-  &__slider{
-   
-    padding-top: 56px;
+  &__slider {
     grid-row: 4/5;
     grid-column: 1/5;
     min-height: 200px;
-
+    padding-top: 56px;
   }
 }
