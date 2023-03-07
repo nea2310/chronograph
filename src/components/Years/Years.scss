@@ -1,0 +1,17 @@
+@import '../../styles/mixins';
+@import '../../styles/vars';
+
+.years {
+  @include font-main(200px, 700, 160px);
+
+  display: flex;
+  column-gap: 50px;
+
+  &__year_type_from {
+    color: $date-from-color;
+  }
+
+  &__year_type_to {
+    color: $date-to-color;
+  }
+}

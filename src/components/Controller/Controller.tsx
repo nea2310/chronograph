@@ -6,7 +6,9 @@ import {
   MAX_BUTTONS_AMOUNTS,
   MIN_BUTTONS_AMOUNTS,
 } from '../../shared/constants';
+import { getYears } from '../../shared/helpers/getYears';
 import { Switcher } from '../Switcher/Switcher';
+import { Years } from '../Years/Years';
 
 import './Controller.scss';
 
@@ -23,12 +25,19 @@ const Controller: FC<Props> = ({ data }) => {
   const [currentCategory, setCurrentCategory] = useState(data[0].index);
   const [isNextButtonActive, setIsNextButtonActive] = useState(true);
   const [isPrevButtonActive, setIsPrevButtonActive] = useState(false);
+  const [from, setFrom] = useState(Math.min(...getYears(data[0].eventsList)));
+  const [to, setTo] = useState(Math.max(...getYears(data[0].eventsList)));
 
   const handleNextButtonClick = () => {
     const index = currentCategory + 1;
     if (index > MAX_BUTTONS_AMOUNTS) return;
     if (index > MAX_BUTTONS_AMOUNTS - 1) setIsNextButtonActive(false);
-    if (currentCategory !== index) setCurrentCategory(index);
+    if (currentCategory !== index) {
+      setCurrentCategory(index);
+      const itemIndex = data.findIndex((item) => item.index === index);
+      setFrom(Math.min(...getYears(data[itemIndex].eventsList)));
+      setTo(Math.max(...getYears(data[itemIndex].eventsList)));
+    }
     if (!isPrevButtonActive) setIsPrevButtonActive(true);
   };
 
@@ -36,7 +45,12 @@ const Controller: FC<Props> = ({ data }) => {
     const index = currentCategory - 1;
     if (index < MIN_BUTTONS_AMOUNTS - 1) return;
     if (index < MIN_BUTTONS_AMOUNTS) setIsPrevButtonActive(false);
-    if (currentCategory !== index) setCurrentCategory(index);
+    if (currentCategory !== index) {
+      setCurrentCategory(index);
+      const itemIndex = data.findIndex((item) => item.index === index);
+      setFrom(Math.min(...getYears(data[itemIndex].eventsList)));
+      setTo(Math.max(...getYears(data[itemIndex].eventsList)));
+    }
     if (!isNextButtonActive) setIsNextButtonActive(true);
   };
 
@@ -47,10 +61,13 @@ const Controller: FC<Props> = ({ data }) => {
         setIsPrevButtonActive(true);
       if (activeButton < MAX_BUTTONS_AMOUNTS && !isNextButtonActive)
         setIsNextButtonActive(true);
+      setFrom(Math.min(...getYears(data[activeButton - 1].eventsList)));
+      setTo(Math.max(...getYears(data[activeButton - 1].eventsList)));
+
       if (activeButton > MAX_BUTTONS_AMOUNTS - 1) setIsNextButtonActive(false);
       if (activeButton < MIN_BUTTONS_AMOUNTS) setIsPrevButtonActive(false);
     },
-    [isNextButtonActive, isPrevButtonActive]
+    [data, isNextButtonActive, isPrevButtonActive]
   );
 
   return (
@@ -86,6 +103,9 @@ const Controller: FC<Props> = ({ data }) => {
           className="controller__button controller__button-next"
           onClick={handleNextButtonClick}
         />
+      </div>
+      <div className="controller__years">
+        <Years from={from} to={to} />
       </div>
     </div>
   );

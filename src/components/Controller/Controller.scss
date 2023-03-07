@@ -44,6 +44,8 @@
   }
 
   &__switcher {
+    position: relative;
+    z-index: 10;
     grid-row: 1/4;
     grid-column: 2/3;
     justify-self: start;
@@ -96,5 +98,12 @@
         transform: rotate(225deg);
       }
     }
+  }
+
+  &__years {
+    position: absolute;
+    z-index: 0;
+    align-self: center;
+    justify-self: center;
   }
 }
