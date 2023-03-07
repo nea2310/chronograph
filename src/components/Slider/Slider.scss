@@ -6,8 +6,6 @@
   display: flex;
   align-items: center;
   max-width: 1270px;
-  // padding-left: 80px;
-  // border: 1px solid red;
   margin-left: 80px;
 
   &__slide {
@@ -39,6 +37,7 @@
     background: $nav-button-background;
     border-radius: 50%;
     box-shadow: $nav-button-shadow;
+    cursor: pointer;
 
     &:disabled {
       visibility: hidden;
