@@ -2,67 +2,71 @@
 @import '../../styles/vars';
 
 .controller {
+  position: relative;
+  display: grid;
+  grid-template-rows: repeat(4, auto);
+  grid-template-columns: minmax(353px, 1fr) minmax(609px, 1fr) minmax(
+      353px,
+      1fr
+    );
   padding-top: 166px;
-border-left: 1px solid $grid-color;
-border-right: 1px solid $grid-color;
-position: relative;
-padding-left: 80px;
-display: grid;
-grid-template-columns: minmax(353px, 1fr) minmax(609px, 1fr) minmax(353px, 1fr);
-grid-template-rows: repeat(4, auto);
+  padding-left: 80px;
+  border-right: 1px solid $grid-color;
+  border-left: 1px solid $grid-color;
 
-// &::before{
-//   content: '';
-//   align-self: center;
-//   position: absolute;
-//   width: 100%;
-//   height: 1px;
-//   background-color: $grid-color;
-// }
+  // &::before{
+  //   content: '';
+  //   align-self: center;
+  //   position: absolute;
+  //   width: 100%;
+  //   height: 1px;
+  //   background-color: $grid-color;
+  // }
 
-// &::after{
-//   content: '';
-//   top: 0px;
-//   justify-self: center;
-//   position: absolute;
-//   height: 100%;
-//   width: 1px;
-//   background-color: $grid-color;
-// }
+  // &::after{
+  //   content: '';
+  //   top: 0px;
+  //   justify-self: center;
+  //   position: absolute;
+  //   height: 100%;
+  //   width: 1px;
+  //   background-color: $grid-color;
+  // }
 
-&__header {
-  @include font-main(56px, 700, 67.2px);
-  margin: 0;
+  &__header {
+    @include font-main(56px, 700, 67.2px);
+
     grid-row: 1/2;
-  grid-column: 1/2;
-  max-width: 353px;
-  box-sizing: border-box;
-}
+    grid-column: 1/2;
+    box-sizing: border-box;
+    max-width: 353px;
+    margin: 0;
+  }
 
-&__switcher{
-  box-sizing: border-box;
-  width: 100%;
-  grid-row: 1/4;
-  grid-column: 2/3;
-  padding-top: 47px;
-  padding-right: 78px;
-  justify-self: start;
+  &__switcher {
+    grid-row: 1/4;
+    grid-column: 2/3;
+    justify-self: start;
+    box-sizing: border-box;
+    width: 100%;
+    padding-top: 47px;
+    padding-right: 78px;
+  }
 
-}
-
-  &__counter{
+  &__counter {
     @include font-main(15px, 400, 18px);
+
     grid-row: 2/3;
     grid-column: 1/2;
     padding-top: 395px;
   }
 
-  &__buttons{
+  &__buttons {
     display: flex;
-    column-gap: 20px;
     grid-row: 3/4;
     grid-column: 1/2;
     padding-top: 21px;
+    column-gap: 20px;
   }
 
   &__button {

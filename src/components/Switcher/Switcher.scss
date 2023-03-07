@@ -16,7 +16,6 @@
 
   &__button-wrapper {
     @include button-reset-style;
-    box-sizing: border-box;
 
     position: absolute;
     z-index: 5;
@@ -41,6 +40,7 @@
 
   &__button {
     @include button-reset-style;
+
     box-sizing: border-box;
     width: 6px;
     height: 6px;
@@ -54,12 +54,14 @@
 
   &__button-index {
     @include font-main(20px, 400, 30px);
+
     visibility: hidden;
     opacity: 0;
   }
 
   &__button-label {
     @include font-main(20px, 700, 30px);
+
     position: absolute;
     left: 75px;
     visibility: hidden;

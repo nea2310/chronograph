@@ -18,10 +18,10 @@
   aspect-ratio: 1/1;
 }
 
-@mixin font-main($font-size, $font-weight, $line-height ){
-  font-family: $font-main;
-  font-size: $font-size;
-  font-weight: $font-weight;
+@mixin font-main($font-size, $font-weight, $line-height) {
   color: $text-color;
+  font-weight: $font-weight;
+  font-size: $font-size;
+  font-family: $font-main;
   line-height: $line-height;
 }
