@@ -7,6 +7,7 @@ import {
   MIN_BUTTONS_AMOUNTS,
 } from '../../shared/constants';
 import { getYears } from '../../shared/helpers/getYears';
+import { Slider } from '../Slider/Slider';
 import { Switcher } from '../Switcher/Switcher';
 import { Years } from '../Years/Years';
 
@@ -16,13 +17,15 @@ type Props = {
   data: {
     index: number;
     label: string;
-    years: number[];
     eventsList: { index: number; year: number; description: string }[];
   }[];
 };
 
 const Controller: FC<Props> = ({ data }) => {
   const [currentCategory, setCurrentCategory] = useState(data[0].index);
+  const [currentEventsList, setCurrentEventsList] = useState(
+    data[0].eventsList
+  );
   const [isNextButtonActive, setIsNextButtonActive] = useState(true);
   const [isPrevButtonActive, setIsPrevButtonActive] = useState(false);
   const [from, setFrom] = useState(Math.min(...getYears(data[0].eventsList)));
@@ -35,8 +38,10 @@ const Controller: FC<Props> = ({ data }) => {
     if (currentCategory !== index) {
       setCurrentCategory(index);
       const itemIndex = data.findIndex((item) => item.index === index);
-      setFrom(Math.min(...getYears(data[itemIndex].eventsList)));
-      setTo(Math.max(...getYears(data[itemIndex].eventsList)));
+      const { eventsList } = data[itemIndex];
+      setCurrentEventsList(eventsList);
+      setFrom(Math.min(...getYears(eventsList)));
+      setTo(Math.max(...getYears(eventsList)));
     }
     if (!isPrevButtonActive) setIsPrevButtonActive(true);
   };
@@ -48,8 +53,10 @@ const Controller: FC<Props> = ({ data }) => {
     if (currentCategory !== index) {
       setCurrentCategory(index);
       const itemIndex = data.findIndex((item) => item.index === index);
-      setFrom(Math.min(...getYears(data[itemIndex].eventsList)));
-      setTo(Math.max(...getYears(data[itemIndex].eventsList)));
+      const { eventsList } = data[itemIndex];
+      setCurrentEventsList(eventsList);
+      setFrom(Math.min(...getYears(eventsList)));
+      setTo(Math.max(...getYears(eventsList)));
     }
     if (!isNextButtonActive) setIsNextButtonActive(true);
   };
@@ -61,8 +68,10 @@ const Controller: FC<Props> = ({ data }) => {
         setIsPrevButtonActive(true);
       if (activeButton < MAX_BUTTONS_AMOUNTS && !isNextButtonActive)
         setIsNextButtonActive(true);
-      setFrom(Math.min(...getYears(data[activeButton - 1].eventsList)));
-      setTo(Math.max(...getYears(data[activeButton - 1].eventsList)));
+      const { eventsList } = data[activeButton - 1];
+      setCurrentEventsList(eventsList);
+      setFrom(Math.min(...getYears(eventsList)));
+      setTo(Math.max(...getYears(eventsList)));
 
       if (activeButton > MAX_BUTTONS_AMOUNTS - 1) setIsNextButtonActive(false);
       if (activeButton < MIN_BUTTONS_AMOUNTS) setIsPrevButtonActive(false);
@@ -106,6 +115,9 @@ const Controller: FC<Props> = ({ data }) => {
       </div>
       <div className="controller__years">
         <Years from={from} to={to} />
+      </div>
+      <div className="controller__slider">
+        <Slider slides={currentEventsList} />
       </div>
     </div>
   );

@@ -3,7 +3,6 @@ const data = [
   {
     index: 1,
     label: 'Технологии',
-    years: [1980, 1986],
     eventsList: [
       {
         index: 1,
@@ -33,7 +32,6 @@ const data = [
   {
     index: 2,
     label: 'Кино',
-    years: [1987, 1991],
     eventsList: [
       {
         index: 1,
@@ -68,7 +66,6 @@ const data = [
   {
     index: 3,
     label: 'Литература',
-    years: [1992, 1997],
     eventsList: [
       {
         index: 1,
@@ -96,7 +93,6 @@ const data = [
   {
     index: 4,
     label: 'Театр',
-    years: [1999, 2004],
     eventsList: [
       {
         index: 1,
@@ -132,7 +128,6 @@ const data = [
   {
     index: 5,
     label: 'Спорт',
-    years: [2006, 2014],
     eventsList: [
       {
         index: 1,
@@ -167,7 +162,6 @@ const data = [
   {
     index: 6,
     label: 'Наука',
-    years: [2015, 2022],
     eventsList: [
       {
         index: 1,
