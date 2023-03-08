@@ -3,11 +3,12 @@ $text-color: #42567a;
 $button-border-color: rgb(48 62 88 / 50%);
 $switcher-border-color: rgb(66 86 122 / 20%);
 $grid-color: rgb(66 86 122 / 10%);
-$slider-labels-color: #3877ee;
 $date-from-color: #5d5fef;
+$date-from-color-mobile: #3877ee;
 $date-to-color: #ef5da8;
+$date-to-color-mobile: #f178b6;
+
 $gradient: linear-gradient($date-from-color 0%, $date-to-color 100%);
-$background: #f4f5f9;
 $nav-button-background: #fff;
 $nav-button-shadow: 0 0 15px rgb(56 119 238 / 10%);
 

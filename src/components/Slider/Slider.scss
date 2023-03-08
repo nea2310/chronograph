@@ -19,6 +19,8 @@
 
   &__slide {
     max-width: 320px;
+    height: 200px;
+    overflow: hidden;
     cursor: default;
   }
 
@@ -27,7 +29,7 @@
   }
 
   &__slide-label {
-    color: $slider-labels-color;
+    color: $date-from-color-mobile;
     font-weight: 400;
     font-size: 25px;
     font-family: $font-slider-labels;
@@ -82,7 +84,7 @@
       bottom: 15px;
       display: flex;
       height: 6px;
-      border-color: $slider-labels-color;
+      border-color: $date-from-color-mobile;
     }
   }
 

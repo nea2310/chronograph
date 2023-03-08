@@ -63,6 +63,10 @@
     visibility: visible;
     cursor: pointer;
     opacity: 1;
+
+    @include media-breakpoint-down($sm) {
+      opacity: 0.4;
+    }
   }
 
   &__button-index {
@@ -89,6 +93,11 @@
     font-size: 14px;
     background-color: transparent;
     transition: $transition;
+
+    @include media-breakpoint-down($sm) {
+      background-color: $text-color;
+      opacity: 1;
+    }
   }
 
   &__button-wrapper_active &__button-index,

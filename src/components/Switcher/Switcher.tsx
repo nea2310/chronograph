@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import { CIRCLE, MAX_BUTTONS_AMOUNTS } from '../../shared/constants';
 import { throttle } from '../../shared/helpers/throttle/throttle';
@@ -170,7 +170,7 @@ const Switcher: FC<Props> = ({
   useEffect(() => {
     const handleWindowResize = () => {
       render();
-      if (window.innerHeight < 767) setNeedTransition(false);
+      if (window.innerWidth < 767) setNeedTransition(false);
       else setNeedTransition(true);
     };
 
@@ -213,7 +213,7 @@ const Switcher: FC<Props> = ({
         {switcherButtons.map(({ index, label }) => (
           <div
             key={index}
-            className={classnames('switcher__button-wrapper', {
+            className={classNames('switcher__button-wrapper', {
               'switcher__button-wrapper_active': index === activeButton,
             })}
           >
@@ -226,7 +226,7 @@ const Switcher: FC<Props> = ({
               <span className="switcher__button-index">{index}</span>
             </button>
             <span
-              className={classnames('switcher__button-label', {
+              className={classNames('switcher__button-label', {
                 'switcher__button-label_visible': isTransitionEnd,
               })}
             >

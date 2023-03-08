@@ -5,7 +5,7 @@
   @include font-main(200px, 700, 160px);
 
   display: flex;
-  padding-bottom: 100px;
+  padding-bottom: 131px;
   letter-spacing: -4px;
   column-gap: 95px;
   cursor: default;
@@ -40,8 +40,8 @@
       padding: 0;
     }
 
-    @include media-breakpoint-down($xs) {
-      color: $slider-labels-color;
+    @include media-breakpoint-down($sm) {
+      color: $date-from-color-mobile;
     }
   }
 
@@ -51,6 +51,10 @@
 
     @include media-breakpoint-down($xl) {
       padding-right: 0;
+    }
+
+    @include media-breakpoint-down($sm) {
+      color: $date-to-color-mobile;
     }
 
     @include media-breakpoint-down($xs) {

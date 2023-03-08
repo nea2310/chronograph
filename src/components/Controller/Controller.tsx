@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
+import classNames from 'classnames';
 
 import {
   MAX_BUTTONS_AMOUNTS,
@@ -32,6 +33,12 @@ const Controller: FC<Props> = ({ data }) => {
   const [from, setFrom] = useState(Math.min(...getYears(data[0].eventsList)));
   const [to, setTo] = useState(Math.max(...getYears(data[0].eventsList)));
 
+  const [isHidden, setIsHidden] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => setIsHidden(false), 100);
+  }, [currentCategory]);
+
   const handleNextButtonClick = () => {
     const index = currentCategory + 1;
     if (index > MAX_BUTTONS_AMOUNTS) return;
@@ -44,6 +51,7 @@ const Controller: FC<Props> = ({ data }) => {
       setCurrentEventsList(eventsList);
       setFrom(Math.min(...getYears(eventsList)));
       setTo(Math.max(...getYears(eventsList)));
+      setIsHidden(true);
     }
     if (!isPrevButtonActive) setIsPrevButtonActive(true);
   };
@@ -60,6 +68,7 @@ const Controller: FC<Props> = ({ data }) => {
       setCurrentEventsList(eventsList);
       setFrom(Math.min(...getYears(eventsList)));
       setTo(Math.max(...getYears(eventsList)));
+      setIsHidden(true);
     }
     if (!isNextButtonActive) setIsNextButtonActive(true);
   };
@@ -76,6 +85,7 @@ const Controller: FC<Props> = ({ data }) => {
       setCurrentLabel(label);
       setFrom(Math.min(...getYears(eventsList)));
       setTo(Math.max(...getYears(eventsList)));
+      setIsHidden(true);
 
       if (activeButton > MAX_BUTTONS_AMOUNTS - 1) setIsNextButtonActive(false);
       if (activeButton < MIN_BUTTONS_AMOUNTS) setIsPrevButtonActive(false);
@@ -121,7 +131,11 @@ const Controller: FC<Props> = ({ data }) => {
       <div className="controller__years">
         <Years from={from} to={to} />
       </div>
-      <div className="controller__slider">
+      <div
+        className={classNames('controller__slider', {
+          controller__slider_hidden: isHidden,
+        })}
+      >
         <Slider slides={currentEventsList} />
       </div>
     </div>
