@@ -144,14 +144,15 @@ const Switcher: FC<Props> = ({
         }ms linear`;
       }
 
-      Array.from(switcher.children).forEach((item) => {
-        if (!(item instanceof HTMLDivElement)) return;
-        const button = item;
-        button.style.transform = `rotate(${newRotationValue * -1}deg)`;
-        button.style.transition = `transform ${
-          Math.abs(angle) * defaultRotateSpeedRatio
-        }ms linear`;
-      });
+      if (needTransition)
+        Array.from(switcher.children).forEach((item) => {
+          if (!(item instanceof HTMLDivElement)) return;
+          const button = item;
+          button.style.transform = `rotate(${newRotationValue * -1}deg)`;
+          button.style.transition = `transform ${
+            Math.abs(angle) * defaultRotateSpeedRatio
+          }ms linear`;
+        });
     },
     [
       buttonRadius,

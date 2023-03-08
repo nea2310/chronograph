@@ -2,6 +2,7 @@
 @import '../../styles/vars';
 
 .controller {
+  
   position: relative;
   display: grid;
   grid-template-rows: repeat(4, auto);
@@ -116,8 +117,17 @@
 
     grid-row: 3/4;
     grid-column: 1/2;
+    transform: translateY(0);
+    opacity: 1;
+    transition: $transition;
     @include media-breakpoint-up($sm) {
       @include visually-hidden;
+    }
+
+    &_hidden {
+      transition: $transition;
+      transform: translateY(20px);
+      opacity: 0;
     }
   }
 
@@ -255,8 +265,8 @@
       grid-column: 1/2;
       height: 200px;
       margin-top: 100px;
-      padding-top: 0;
       padding-top: 18px;
+      padding-right: 50px;
       border-top: 2px solid $grid-color;
       transform: translateY(0);
       transition: $transition;

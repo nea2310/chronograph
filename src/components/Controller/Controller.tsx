@@ -40,6 +40,18 @@ const Controller: FC<Props> = ({ data }) => {
     }, 100);
   }, [currentCategory]);
 
+  const updateState = (
+    label: string,
+    eventsList: { index: number; year: number; description: string }[],
+    needHide = true
+  ) => {
+    setCurrentLabel(label);
+    setCurrentEventsList(eventsList);
+    setFrom(Math.min(...getYears(eventsList)));
+    setTo(Math.max(...getYears(eventsList)));
+    setIsHidden(needHide);
+  };
+
   const handleNextButtonClick = () => {
     const index = currentCategory + 1;
     if (index > MAX_BUTTONS_AMOUNTS) return;
@@ -48,11 +60,7 @@ const Controller: FC<Props> = ({ data }) => {
       setCurrentCategory(index);
       const itemIndex = data.findIndex((item) => item.index === index);
       const { eventsList, label } = data[itemIndex];
-      setCurrentLabel(label);
-      setCurrentEventsList(eventsList);
-      setFrom(Math.min(...getYears(eventsList)));
-      setTo(Math.max(...getYears(eventsList)));
-      setIsHidden(true);
+      updateState(label, eventsList);
     }
     if (!isPrevButtonActive) setIsPrevButtonActive(true);
   };
@@ -65,11 +73,7 @@ const Controller: FC<Props> = ({ data }) => {
       setCurrentCategory(index);
       const itemIndex = data.findIndex((item) => item.index === index);
       const { eventsList, label } = data[itemIndex];
-      setCurrentLabel(label);
-      setCurrentEventsList(eventsList);
-      setFrom(Math.min(...getYears(eventsList)));
-      setTo(Math.max(...getYears(eventsList)));
-      setIsHidden(true);
+      updateState(label, eventsList);
     }
     if (!isNextButtonActive) setIsNextButtonActive(true);
   };
@@ -82,11 +86,7 @@ const Controller: FC<Props> = ({ data }) => {
       if (activeButton < MAX_BUTTONS_AMOUNTS && !isNextButtonActive)
         setIsNextButtonActive(true);
       const { eventsList, label } = data[activeButton - 1];
-      setCurrentEventsList(eventsList);
-      setCurrentLabel(label);
-      setFrom(Math.min(...getYears(eventsList)));
-      setTo(Math.max(...getYears(eventsList)));
-      setIsHidden(!isResize);
+      updateState(label, eventsList, !isResize);
 
       if (activeButton > MAX_BUTTONS_AMOUNTS - 1) setIsNextButtonActive(false);
       if (activeButton < MIN_BUTTONS_AMOUNTS) setIsPrevButtonActive(false);
@@ -97,7 +97,13 @@ const Controller: FC<Props> = ({ data }) => {
   return (
     <div className="controller">
       <h1 className="controller__header">Исторические даты</h1>
-      <h2 className="controller__category-header">{currentLabel}</h2>
+      <h2
+        className={classNames('controller__category-header', {
+          'controller__category-header_hidden': isHidden,
+        })}
+      >
+        {currentLabel}
+      </h2>
       {data.length >= MIN_BUTTONS_AMOUNTS &&
         data.length <= MAX_BUTTONS_AMOUNTS && (
           <div className="controller__switcher">
