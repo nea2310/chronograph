@@ -247,7 +247,8 @@
     grid-row: 4/5;
     grid-column: 1/5;
     padding-top: 56px;
-    opacity: 1;
+    transition: $transition;
+    transition-duration: 1500ms;
 
     @include media-breakpoint-down($sm) {
       grid-row: 3/4;
@@ -262,12 +263,13 @@
     }
 
     &_hidden {
+      visibility: hidden;
+      opacity: 0;
+      transition: $transition;
+      transition-duration: 1ms;
+
       @include media-breakpoint-down($sm) {
         transform: translateY(20px);
-        visibility: hidden;
-        opacity: 0;
-        transition: $transition;
-        transition-duration: 1ms;
       }
     }
   }

@@ -18,7 +18,7 @@ type Props = {
   activeButtonIndex?: number;
   defaultAngleRatio?: number;
   defaultRotateSpeedRatio?: number;
-  onClick?: (activeIndex: number) => void;
+  onClick?: (activeIndex: number, isResize: boolean) => void;
 };
 
 const Switcher: FC<Props> = ({
@@ -45,12 +45,24 @@ const Switcher: FC<Props> = ({
   );
 
   const render = useCallback(() => {
+    setActiveButton(1);
+    onClick?.(1, true);
     const switcher = switcherWrapperRef.current;
     const switcherWrapper = switcherRef.current;
     if (!switcher || !switcherWrapper) return;
 
     const buttons = switcher.querySelectorAll('.switcher__button-wrapper');
     if (!(buttons?.[0] instanceof HTMLElement)) return;
+    switcher.style.transform = '';
+    switcher.style.transition = '';
+    Array.from(buttons).forEach((item) => {
+      if (!(item instanceof HTMLDivElement)) return;
+      const button = item;
+      button.style.transform = '';
+      button.style.transition = '';
+      button.style.left = '';
+      button.style.top = '';
+    });
 
     const shift = buttons[0].offsetHeight / 2;
     setSingleAngle(CIRCLE / buttons.length);
@@ -178,7 +190,7 @@ const Switcher: FC<Props> = ({
     window.addEventListener('resize', throttledHandleWindowResize);
 
     return () => window.removeEventListener('resize', handleWindowResize);
-  }, [render]);
+  }, [activeButton, handleActiveIndexChange, render]);
 
   useEffect(() => {
     if (activeButtonIndex !== activeButton)
@@ -197,7 +209,7 @@ const Switcher: FC<Props> = ({
   ) => {
     const selectedButton = event.currentTarget;
     rotate(selectedButton);
-    onClick?.(Number(selectedButton.getAttribute('data-index')));
+    onClick?.(Number(selectedButton.getAttribute('data-index')), false);
   };
 
   const switcherWrapperRef = useRef<HTMLDivElement>(null);

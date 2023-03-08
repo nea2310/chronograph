@@ -33,10 +33,13 @@ const Controller: FC<Props> = ({ data }) => {
   const [from, setFrom] = useState(Math.min(...getYears(data[0].eventsList)));
   const [to, setTo] = useState(Math.max(...getYears(data[0].eventsList)));
 
-  const [isHidden, setIsHidden] = useState(true);
+  const [isHidden, setIsHidden] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => setIsHidden(false), 100);
+    setIsHidden(true);
+    setTimeout(() => {
+      setIsHidden(false);
+    }, 100);
   }, [currentCategory]);
 
   const handleNextButtonClick = () => {
@@ -74,7 +77,7 @@ const Controller: FC<Props> = ({ data }) => {
   };
 
   const handleSwitcherClick = useCallback(
-    (activeButton: number) => {
+    (activeButton: number, isResize = false) => {
       setCurrentCategory(activeButton);
       if (activeButton > MIN_BUTTONS_AMOUNTS - 1 && !isPrevButtonActive)
         setIsPrevButtonActive(true);
@@ -85,7 +88,7 @@ const Controller: FC<Props> = ({ data }) => {
       setCurrentLabel(label);
       setFrom(Math.min(...getYears(eventsList)));
       setTo(Math.max(...getYears(eventsList)));
-      setIsHidden(true);
+      setIsHidden(!isResize);
 
       if (activeButton > MAX_BUTTONS_AMOUNTS - 1) setIsNextButtonActive(false);
       if (activeButton < MIN_BUTTONS_AMOUNTS) setIsPrevButtonActive(false);
