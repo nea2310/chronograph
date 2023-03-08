@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable jsx-a11y/control-has-associated-label */
 import { FC, useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
 
@@ -119,12 +117,14 @@ const Controller: FC<Props> = ({ data }) => {
       }`}</span>
       <div className="controller__buttons">
         <button
+          aria-label="назад"
           type="button"
           disabled={!isPrevButtonActive}
           className="controller__button controller__button-prev"
           onClick={handlePrevButtonClick}
         />
         <button
+          aria-label="вперед"
           type="button"
           disabled={!isNextButtonActive}
           className="controller__button controller__button-next"

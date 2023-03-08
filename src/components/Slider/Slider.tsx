@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
-/* eslint-disable max-len */
 import { FC, useEffect, useState } from 'react';
 import { Navigation } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -35,10 +33,12 @@ const Slider: FC<Props> = ({ slides }) => {
   return (
     <div className="slider">
       <button
+        aria-label="назад"
         type="button"
         className="slider__button slider__button_type_prev"
       />
       <button
+        aria-label="вперед"
         type="button"
         className="slider__button slider__button_type_next"
       />

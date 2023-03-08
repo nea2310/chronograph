@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { FC, useEffect, useState } from 'react';
 
 import './Years.scss';

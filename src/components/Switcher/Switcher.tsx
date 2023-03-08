@@ -91,6 +91,7 @@ const Switcher: FC<Props> = ({
     const buttonDimensions = buttons[0].getBoundingClientRect();
     setTargetPositionX(buttonDimensions.x + shift);
     setTargetPositionY(buttonDimensions.y + shift);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultAngleRatio]);
 
   const rotate = useCallback(
