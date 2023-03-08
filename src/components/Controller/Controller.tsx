@@ -23,6 +23,7 @@ type Props = {
 
 const Controller: FC<Props> = ({ data }) => {
   const [currentCategory, setCurrentCategory] = useState(data[0].index);
+  const [currentLabel, setCurrentLabel] = useState(data[0].label);
   const [currentEventsList, setCurrentEventsList] = useState(
     data[0].eventsList
   );
@@ -38,7 +39,8 @@ const Controller: FC<Props> = ({ data }) => {
     if (currentCategory !== index) {
       setCurrentCategory(index);
       const itemIndex = data.findIndex((item) => item.index === index);
-      const { eventsList } = data[itemIndex];
+      const { eventsList, label } = data[itemIndex];
+      setCurrentLabel(label);
       setCurrentEventsList(eventsList);
       setFrom(Math.min(...getYears(eventsList)));
       setTo(Math.max(...getYears(eventsList)));
@@ -53,7 +55,8 @@ const Controller: FC<Props> = ({ data }) => {
     if (currentCategory !== index) {
       setCurrentCategory(index);
       const itemIndex = data.findIndex((item) => item.index === index);
-      const { eventsList } = data[itemIndex];
+      const { eventsList, label } = data[itemIndex];
+      setCurrentLabel(label);
       setCurrentEventsList(eventsList);
       setFrom(Math.min(...getYears(eventsList)));
       setTo(Math.max(...getYears(eventsList)));
@@ -68,8 +71,9 @@ const Controller: FC<Props> = ({ data }) => {
         setIsPrevButtonActive(true);
       if (activeButton < MAX_BUTTONS_AMOUNTS && !isNextButtonActive)
         setIsNextButtonActive(true);
-      const { eventsList } = data[activeButton - 1];
+      const { eventsList, label } = data[activeButton - 1];
       setCurrentEventsList(eventsList);
+      setCurrentLabel(label);
       setFrom(Math.min(...getYears(eventsList)));
       setTo(Math.max(...getYears(eventsList)));
 
@@ -82,6 +86,7 @@ const Controller: FC<Props> = ({ data }) => {
   return (
     <div className="controller">
       <h1 className="controller__header">Исторические даты</h1>
+      <h2 className="controller__category-header">{currentLabel}</h2>
       {data.length >= MIN_BUTTONS_AMOUNTS &&
         data.length <= MAX_BUTTONS_AMOUNTS && (
           <div className="controller__switcher">

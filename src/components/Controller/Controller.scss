@@ -54,6 +54,11 @@
     }
   }
 
+  &__category-header {
+    @include font-main(30px, 700, 30px);
+    @include visually-hidden;
+  }
+
   &__switcher {
     position: relative;
     z-index: 10;
