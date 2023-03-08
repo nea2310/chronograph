@@ -34,3 +34,21 @@
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
 }
+
+@mixin media-breakpoint-up($width) {
+  @media (min-width: ($width + 1)) {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-down($width) {
+  @media (max-width: $width) {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-between($min-width, $max-width) {
+  @media (min-width: ($min-width + 1)) and (max-width: $max-width) {
+    @content;
+  }
+}

@@ -8,6 +8,11 @@
   max-width: 1270px;
   margin-left: 80px;
 
+  @include media-breakpoint-down($xl) {
+    max-width: 100%;
+    margin-right: 80px;
+  }
+
   &__slide {
     max-width: 320px;
     cursor: default;
@@ -66,6 +71,10 @@
   &__button_type_next {
     position: absolute;
     right: -50px;
+
+    @include media-breakpoint-down($xl) {
+      right: -60px;
+    }
 
     &::after {
       position: absolute;

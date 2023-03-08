@@ -1,11 +1,14 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable max-len */
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Navigation } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
 // eslint-disable-next-line import/no-unresolved
 import 'swiper/css/navigation';
+
+import { getSlidesAmount } from '../../shared/helpers/getSlidesAmount';
+import { throttle } from '../../shared/helpers/throttle/throttle';
 
 import './Slider.scss';
 // eslint-disable-next-line import/no-unresolved
@@ -16,6 +19,19 @@ type Props = {
 };
 
 const Slider: FC<Props> = ({ slides }) => {
+  const [slidesAmount, setSlidesAmount] = useState(getSlidesAmount());
+
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setSlidesAmount(getSlidesAmount());
+    };
+
+    const throttledHandleWindowResize = throttle(handleWindowResize, 250);
+    window.addEventListener('resize', throttledHandleWindowResize);
+
+    return () => window.removeEventListener('resize', handleWindowResize);
+  }, []);
+
   return (
     <div className="slider">
       <button
@@ -28,7 +44,7 @@ const Slider: FC<Props> = ({ slides }) => {
       />
       <Swiper
         spaceBetween={50}
-        slidesPerView={3}
+        slidesPerView={slidesAmount}
         modules={[Navigation]}
         navigation={{
           prevEl: '.slider__button_type_prev',

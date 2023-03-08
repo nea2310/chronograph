@@ -10,12 +10,36 @@
   column-gap: 95px;
   cursor: default;
 
+  @include media-breakpoint-down($xl) {
+    @include font-main(150px, 700, 160px);
+  }
+
+  @include media-breakpoint-down($lg) {
+    @include font-main(120px, 700, 72px);
+  }
+
+  @include media-breakpoint-down($md) {
+    @include font-main(90px, 700, 72px);
+  }
+
+  @include media-breakpoint-down($sm) {
+    @include font-main(56px, 700, 72px);
+  }
+
   &__year_type_from {
     color: $date-from-color;
+
+    @include media-breakpoint-down($lg) {
+      padding-left: 8%;
+    }
   }
 
   &__year_type_to {
     padding-right: 40px;
     color: $date-to-color;
+
+    @include media-breakpoint-down($xl) {
+      padding-right: 0;
+    }
   }
 }
