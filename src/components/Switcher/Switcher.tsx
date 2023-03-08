@@ -40,6 +40,9 @@ const Switcher: FC<Props> = ({
   const [singleAngle, setSingleAngle] = useState(0);
   const [activeButton, setActiveButton] = useState(activeButtonIndex);
   const [isTransitionEnd, setIsTransitionEnd] = useState(true);
+  const [needTransition, setNeedTransition] = useState(
+    window.innerWidth >= 767
+  );
 
   const render = useCallback(() => {
     const switcher = switcherWrapperRef.current;
@@ -52,7 +55,6 @@ const Switcher: FC<Props> = ({
     const shift = buttons[0].offsetHeight / 2;
     setSingleAngle(CIRCLE / buttons.length);
     setButtonRadius(shift);
-    // switcherWrapper.style.padding = `${shift}px`;
 
     const switcherDiameter = switcher.offsetHeight;
 
@@ -121,10 +123,13 @@ const Switcher: FC<Props> = ({
         angle = CIRCLE * -1 - angle;
       }
 
-      switcher.style.transform = `rotate(${newRotationValue}deg)`;
-      switcher.style.transition = `transform ${
-        Math.abs(angle) * defaultRotateSpeedRatio
-      }ms linear`;
+      if (needTransition) {
+        switcher.style.transform = `rotate(${newRotationValue}deg)`;
+
+        switcher.style.transition = `transform ${
+          Math.abs(angle) * defaultRotateSpeedRatio
+        }ms linear`;
+      }
 
       Array.from(switcher.children).forEach((item) => {
         if (!(item instanceof HTMLDivElement)) return;
@@ -138,6 +143,7 @@ const Switcher: FC<Props> = ({
     [
       buttonRadius,
       defaultRotateSpeedRatio,
+      needTransition,
       singleAngle,
       switcherMiddle,
       switcherRadius,
@@ -164,6 +170,8 @@ const Switcher: FC<Props> = ({
   useEffect(() => {
     const handleWindowResize = () => {
       render();
+      if (window.innerHeight < 767) setNeedTransition(false);
+      else setNeedTransition(true);
     };
 
     const throttledHandleWindowResize = throttle(handleWindowResize, 250);

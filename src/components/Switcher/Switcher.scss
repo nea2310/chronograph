@@ -12,6 +12,13 @@
     border: 1px solid $switcher-border-color;
     border-radius: 50%;
     aspect-ratio: 1/1;
+
+    @include media-breakpoint-down($sm) {
+      position: initial;
+      column-gap: 10px;
+      border: none;
+      aspect-ratio: unset;
+    }
   }
 
   &__button-wrapper {
@@ -29,6 +36,12 @@
     border: 1px solid transparent;
     border-radius: 50%;
     cursor: pointer;
+
+    @include media-breakpoint-down($sm) {
+      position: initial;
+      width: 6px;
+      height: 6px;
+    }
 
     &_active,
     &:hover {
@@ -82,11 +95,18 @@
   &__button-wrapper:hover &__button-index {
     visibility: visible;
     opacity: 1;
+
+    @include media-breakpoint-down($sm) {
+      visibility: hidden;
+    }
   }
 
   &__button-wrapper_active &__button-label_visible {
     visibility: visible;
     opacity: 1;
     transition: $transition;
+    @include media-breakpoint-down($sm) {
+      visibility: hidden;
+    }
   }
 }

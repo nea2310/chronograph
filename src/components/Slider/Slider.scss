@@ -13,9 +13,17 @@
     margin-right: 80px;
   }
 
+  @include media-breakpoint-down($xs) {
+    margin: 0;
+  }
+
   &__slide {
     max-width: 320px;
     cursor: default;
+  }
+
+  @include media-breakpoint-down($xs) {
+    min-width: 166px;
   }
 
   &__slide-label {
@@ -23,7 +31,16 @@
     font-weight: 400;
     font-size: 25px;
     font-family: $font-slider-labels;
-    line-height: 120%;
+    line-height: 30px;
+
+    @include media-breakpoint-down($sm) {
+      font-size: 20px;
+    }
+
+    @include media-breakpoint-down($xs) {
+      font-size: 16px;
+      line-height: 19.2px;
+    }
   }
 
   &__slide-description {
@@ -31,6 +48,14 @@
 
     margin: 0;
     padding-top: 15px;
+
+    @include media-breakpoint-down($sm) {
+      font-size: 16px;
+    }
+    @include media-breakpoint-down($xs) {
+      font-size: 14px;
+      line-height: 20.3px;
+    }
   }
 
   &__button {
@@ -43,6 +68,9 @@
     border-radius: 50%;
     box-shadow: $nav-button-shadow;
     cursor: pointer;
+    @include media-breakpoint-down($sm) {
+      @include visually-hidden;
+    }
 
     &:disabled {
       visibility: hidden;
