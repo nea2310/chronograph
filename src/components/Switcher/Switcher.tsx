@@ -74,14 +74,13 @@ const Switcher: FC<Props> = ({
       const radius = switcherDiameter / 2;
       setSwitcherRadius(radius);
       setSwitcherMiddle(Number(switcher.getBoundingClientRect().x) + radius);
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i <= buttons.length; i++) {
+      for (let i = 0; i <= buttons.length; i += 1) {
         const button = buttons[i];
         if (!(button instanceof HTMLElement)) break;
         const angle =
           (2 / buttons.length) * i * Math.PI * -1 + defaultAngleRatio;
-        const left = `${radius * Math.sin(angle) + radius - shift + 2}px`;
-        const top = `${radius * Math.cos(angle) + radius - shift + 2}px`;
+        const left = `${radius * Math.sin(angle) + radius - shift}px`;
+        const top = `${radius * Math.cos(angle) + radius - shift}px`;
         button.style.left = left;
         button.style.top = top;
       }
