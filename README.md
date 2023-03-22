@@ -1,4 +1,4 @@
-# Chronograph
+# Chronograph - test task from Only Digital
 ## How to work
 #### Download the project from https://github.com/nea2310/chronograph
 #### Install dependencies
