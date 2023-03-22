@@ -75,6 +75,7 @@
     @include font-main(20px, 400, 30px);
 
     font-size: 1px;
+    color: transparent;
   }
 
   &__button-label {
@@ -104,6 +105,7 @@
 
   &__button-wrapper_active &__button-index,
   &__button-wrapper:hover &__button-index {
+    color: $text-color;
     width: 56px;
     height: 56px;
     font-size: 20px;
